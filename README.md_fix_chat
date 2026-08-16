@@ -1,0 +1,21 @@
+# Fixed Autism Detection App - Copy & Chatbot
+
+## Quick Test:
+1. `python app_fixed.py`
+2. Open http://localhost:5000
+3. Upload audio/video files
+4. **Result page**:
+   - Click "📋 Copy Risk Info to Chatbot" → **automatically loads full risk info in chat box**
+   - Paste your **Gemini API key** in the collapsible field (get free: https://aistudio.google.com/app/apikey)
+   - Type question or click Send → **Gemini answers with context**!
+
+## What was fixed:
+✅ **Copy button**: Now copies REAL risk score/interpretation/steps (fixed Jinja template literals) + auto-pastes to chat box  
+✅ **Chatbot**: Direct Gemini API (`gemini-1.5-flash`), paste API key, works immediately, secure proxy ready  
+
+**No env vars needed** - paste key directly in page!
+
+## Backend proxy ready too:
+`set GEMINI_API_KEY=your_key && python app_fixed.py`
+
+Enjoy! 🚀

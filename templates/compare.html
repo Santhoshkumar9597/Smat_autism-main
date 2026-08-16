@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ translations.get('compare', 'Compare Assessments') }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      padding: 20px 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #6C63FF;
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #FF758C, #FF7EB3);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #FFBABA, #FF7EB3);
+    }
+
+    .btn-pdf {
+      background: #FF6B6B;
+    }
+
+    .btn-pdf:hover {
+      background: #EE5A52;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .comparison-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .assessment-card {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .assessment-card h2 {
+      text-align: center;
+      color: #FF758C;
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .metric:last-child {
+      border-bottom: none;
+    }
+
+    .metric-label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .metric-value {
+      font-size: 1.1rem;
+      color: #6C63FF;
+      font-weight: 600;
+    }
+
+    .score-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+    }
+
+    .score-high {
+      background: #FF6B6B;
+    }
+
+    .score-medium {
+      background: #FFA500;
+    }
+
+    .score-low {
+      background: #51CF66;
+    }
+
+    .trend-indicator {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .trend-up {
+      background: #FFE5E5;
+      color: #FF6B6B;
+    }
+
+    .trend-down {
+      background: #E5FFE5;
+      color: #51CF66;
+    }
+
+    .trend-stable {
+      background: #FFF5E5;
+      color: #FFA500;
+    }
+
+    .analysis-section {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+    }
+
+    .analysis-section h3 {
+      color: #6C63FF;
+      margin-top: 0;
+    }
+
+    .analysis-text {
+      color: #333;
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .comparison-container {
+        grid-template-columns: 1fr;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 {{ translations.get('compare', 'Compare Assessments') }}</h1>
+    <div>
+      <button class="btn btn-pdf" onclick="exportComparison()">📥 Export as PDF</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="comparison-container">
+      <!-- Assessment 1 -->
+      <div class="assessment-card">
+        <h2>{{ translations.get('assessment', 'Assessment') }} 1</h2>
+        
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('date', 'Date') }}:</span>
+          <span class="metric-value">{{ assessment1.assessment_date[:10] }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('risk_score', 'Risk Score') }}:</span>
+          <span class="metric-value">
+            <span class="score-badge {% if assessment1.risk_score > 0.6 %}score-high{% elif assessment1.risk_score > 0.3 %}score-medium{% else %}score-low{% endif %}">
+              {{ "%.2f" | format(assessment1.risk_score) }}
+            </span>
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('interpretation', 'Interpretation') }}:</span>
+          <span class="metric-value">{{ assessment1.interpretation }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('age_months', 'Age (months)') }}:</span>
+          <span class="metric-value">{{ assessment1.age_months or 'N/A' }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('language', 'Language') }}:</span>
+          <span class="metric-value">{{ assessment1.language }}</span>
+        </div>
+      </div>
+
+      <!-- Assessment 2 -->
+      <div class="assessment-card">
+        <h2>{{ translations.get('assessment', 'Assessment') }} 2</h2>
+        
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('date', 'Date') }}:</span>
+          <span class="metric-value">{{ assessment2.assessment_date[:10] }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('risk_score', 'Risk Score') }}:</span>
+          <span class="metric-value">
+            <span class="score-badge {% if assessment2.risk_score > 0.6 %}score-high{% elif assessment2.risk_score > 0.3 %}score-medium{% else %}score-low{% endif %}">
+              {{ "%.2f" | format(assessment2.risk_score) }}
+            </span>
+            <span class="trend-indicator {% if assessment2.risk_score > assessment1.risk_score %}trend-up{% elif assessment2.risk_score < assessment1.risk_score %}trend-down{% else %}trend-stable{% endif %}">
+              {% if assessment2.risk_score > assessment1.risk_score %}
+                ↑ {{ "%.2f" | format(assessment2.risk_score - assessment1.risk_score) }}
+              {% elif assessment2.risk_score < assessment1.risk_score %}
+                ↓ {{ "%.2f" | format(assessment1.risk_score - assessment2.risk_score) }}
+              {% else %}
+                = Stable
+              {% endif %}
+            </span>
+          </span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('interpretation', 'Interpretation') }}:</span>
+          <span class="metric-value">{{ assessment2.interpretation }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('age_months', 'Age (months)') }}:</span>
+          <span class="metric-value">{{ assessment2.age_months or 'N/A' }}</span>
+        </div>
+
+        <div class="metric">
+          <span class="metric-label">{{ translations.get('language', 'Language') }}:</span>
+          <span class="metric-value">{{ assessment2.language }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analysis Section -->
+    <div class="analysis-section">
+      <h3>📈 Analysis</h3>
+      <div class="analysis-text">
+        {% set score_diff = assessment2.risk_score - assessment1.risk_score %}
+        {% if score_diff > 0.1 %}
+          <p><strong>⚠ Risk Increase:</strong> The risk score has increased by {{ "%.2f" | format(score_diff) }} points. This may indicate:
+          <ul>
+            <li>Regression in current behaviors or skills</li>
+            <li>New symptoms or concerns emerging</li>
+            <li>Different testing conditions or more accurate assessment</li>
+          </ul>
+          <strong>Recommendation:</strong> Consider consulting with healthcare professionals for further evaluation.
+          </p>
+        {% elif score_diff < -0.1 %}
+          <p><strong>✅ Risk Decrease:</strong> The risk score has decreased by {{ "%.2f" | format(-score_diff) }} points. This is a positive sign indicating:
+          <ul>
+            <li>Improvement in developmental behaviors</li>
+            <li>Positive response to interventions or therapies</li>
+            <li>Enhanced social communication skills</li>
+          </ul>
+          <strong>Recommendation:</strong> Continue current therapies and monitoring.
+          </p>
+        {% else %}
+          <p><strong>= Stable:</strong> The risk score remains relatively stable (change: {{ "%.2f" | format(score_diff) }} points). This suggests:
+          <ul>
+            <li>Current behavioral patterns are consistent</li>
+            <li>Interventions maintain effectiveness</li>
+            <li>Continued observation is appropriate</li>
+          </ul>
+          <strong>Recommendation:</strong> Maintain current treatment plan and periodic assessments.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a href="/history" class="btn">{{ translations.get('back', 'Back to History') }}</a>
+      <a href="/" class="btn">{{ translations.get('home', 'Home') }}</a>
+    </div>
+  </div>
+
+  <script>
+    function exportComparison() {
+      const a1_id = new URLSearchParams(window.location.search).get('a1') || '{{ assessment1.id }}';
+      const a2_id = new URLSearchParams(window.location.search).get('a2') || '{{ assessment2.id }}';
+      window.location.href = `/compare/${a1_id}/${a2_id}?format=pdf`;
+    }
+  </script>
+</body>
+</html>

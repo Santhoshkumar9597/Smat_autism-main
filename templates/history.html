@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ translations.get('history', 'Assessment History') }}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      padding: 20px 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #FF758C;
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #FF758C, #FF7EB3);
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #FFBABA, #FF7EB3);
+    }
+
+    .btn-secondary {
+      background: #6C63FF;
+    }
+
+    .btn-secondary:hover {
+      background: #5A5AC8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .language-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .language-selector select {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: white;
+    }
+
+    .table-container {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    table thead {
+      background: linear-gradient(90deg, #FF758C, #FF7EB3);
+      color: white;
+    }
+
+    table th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      color: #333;
+    }
+
+    table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .score-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .score-high {
+      background: #FF6B6B;
+    }
+
+    .score-medium {
+      background: #FFA500;
+    }
+
+    .score-low {
+      background: #51CF66;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-export {
+      background: #FFB6C1;
+      color: white;
+    }
+
+    .btn-export:hover {
+      background: #FF96AD;
+    }
+
+    .btn-pdf {
+      background: #FF6B6B;
+      color: white;
+    }
+
+    .btn-pdf:hover {
+      background: #EE5A52;
+    }
+
+    .btn-excel {
+      background: #51CF66;
+      color: white;
+    }
+
+    .btn-excel:hover {
+      background: #40C057;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: #FFB6C1;
+      margin-bottom: 20px;
+    }
+
+    .empty-state p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+      }
+
+      .header-buttons {
+        width: 100%;
+        justify-content: center;
+      }
+
+      table {
+        font-size: 0.85rem;
+      }
+
+      table th, table td {
+        padding: 10px;
+      }
+
+      .action-buttons {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 {{ translations.get('history', 'Assessment History') }}</h1>
+    <div class="header-buttons">
+      <button class="btn btn-secondary" onclick="exportAll()">📥 {{ translations.get('export', 'Export Report') }}</button>
+      <a href="/" class="btn">{{ translations.get('home', 'Home') }}</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="language-selector">
+      <label>{{ translations.get('select_language', 'Select Language') }}:</label>
+      <select onchange="changeLanguage(this.value)">
+        {% for lang_code, lang_name in languages.items() %}
+          <option value="{{ lang_code }}" {% if lang_code == language %}selected{% endif %}>{{ lang_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="table-container">
+      {% if assessments %}
+        <table>
+          <thead>
+            <tr>
+              <th>{{ translations.get('date', 'Date') }}</th>
+              <th>{{ translations.get('score', 'Score') }}</th>
+              <th>{{ translations.get('interpretation', 'Interpretation') }}</th>
+              <th>{{ translations.get('age_months', 'Age (months)') }}</th>
+              <th>{{ translations.get('language', 'Language') }}</th>
+              <th>{{ translations.get('actions', 'Actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assessment in assessments %}
+              <tr>
+                <td>{{ assessment.assessment_date[:10] }}</td>
+                <td>
+                  <span class="score-badge {% if assessment.risk_score > 0.6 %}score-high{% elif assessment.risk_score > 0.3 %}score-medium{% else %}score-low{% endif %}">
+                    {{ "%.2f" | format(assessment.risk_score) }}
+                  </span>
+                </td>
+                <td>{{ assessment.interpretation }}</td>
+                <td>{{ assessment.age_months or 'N/A' }}</td>
+                <td>{{ assessment.language }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn btn-pdf" onclick="exportAssessment({{ assessment.id }}, 'pdf')">PDF</button>
+                    <button class="action-btn btn-excel" onclick="exportAssessment({{ assessment.id }}, 'excel')">Excel</button>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>{{ translations.get('no_history', 'No assessment history found.') }}</p>
+          <a href="/" class="btn">{{ translations.get('back', 'Back') }}</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    function exportAssessment(id, format) {
+      window.location.href = `/export/${id}?format=${format}`;
+    }
+
+    function exportAll() {
+      window.location.href = '/export/all';
+    }
+
+    function changeLanguage(lang) {
+      fetch(`/api/language/set/${lang}`)
+        .then(() => {
+          window.location.href = `/history?language=${lang}`;
+        });
+    }
+  </script>
+</body>
+</html>

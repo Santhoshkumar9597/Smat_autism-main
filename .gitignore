@@ -1,0 +1,52 @@
+# Virtual environments
+.venv/
+.venv310/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Data and models
+*.h5
+*.ckpt
+*.pb
+*.tflite
+
+# Logs
+*.log
+
+# Temporary or OS files
+.DS_Store
+Thumbs.db
+
+# Compressed or archive files
+*.zip
+*.tar
+*.gz
+*.7z
+
+# Environment / secrets
+.env
+
+# IDE or editor files
+.vscode/
+.idea/
+
+.venv310/
+__pycache__/
+*.pyc
+
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+*.zip
+*.exe
+*.dll
